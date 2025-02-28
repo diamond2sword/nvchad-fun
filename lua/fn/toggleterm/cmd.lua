@@ -30,8 +30,9 @@ local first_file_win = require('fn.buf.first-file-win')
 
 local toggleterm_cmd = function(cmd, opts)
   local file_win = first_file_win()
-  if file_win == nil then return end
-  vim.api.nvim_set_current_win(file_win)
+  if file_win then
+	  vim.api.nvim_set_current_win(file_win)
+	end
 
   local current_win = vim.api.nvim_get_current_win()
   local default_opts = {

@@ -57,5 +57,23 @@ return {
         border = "curved", -- Border style (single, double, curved, etc.)
       },
     }
+  },
+  {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy", -- Load only when needed
+		opts = {
+			input = {
+				enabled = true,
+				border = "rounded", -- No border (faster rendering)
+				win_options = {
+					winblend = 0, -- No transparency (prevents extra redraw)
+				},
+			},
+			select = {
+				enabled = true,
+				backend = { "builtin" }, -- Use only built-in UI (no telescope dependency)
+				trim_prompt = true, -- Remove extra spaces
+			},
+    }
   }
 }
