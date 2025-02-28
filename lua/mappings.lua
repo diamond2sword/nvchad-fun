@@ -41,23 +41,13 @@ local _git = function(git_args)
   vim.notify(cmd)
   vim.fn.jobstart(cmd, {
     on_stdout = function()
-      vim.notify_once("Saved")
+      vim.notify_once(git_args)
     end
   })
-  -- vim.ui.input(
-  --   {
-  --     prompt = ' Git Push: Confirm',
-  --     default = cmd
-  --   },
-  --   function(cmd_confirmed)
-  --     -- if cmd_confirmed == nil then return end
-  --     vim.fn.jobstart(cmd_confirmed, {
-  --       on_stdout = function()
-  --         vim.notify("Copied")
-  --       end
-  --     })
-  --   end
-  -- )
 end
 
-map("n", "<C-S>", function() _git("push") end)
+map("n", "<Leader>g", "", { desc = "Git" })
+map("n", "<Leader>g<C-S>", function() _git("push") end,
+  { desc = "Push" })
+map("n", "<Leader>g<C-L>", function() _git("login") end,
+  { desc = "Login" })
