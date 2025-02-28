@@ -46,7 +46,11 @@ local _git = function(git_args)
 end
 
 map("n", "<Leader>g", "", { desc = "Git" })
+
 map("n", "<Leader>g<C-S>", function() _git("push") end,
   { desc = "Push" })
+map("n", "<Leader>g<C-S>", require('fn.git.push'),
+  { desc = "Push" })
+
 map("n", "<Leader>g<C-L>", function() _git("login") end,
   { desc = "Login" })

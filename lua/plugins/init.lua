@@ -42,4 +42,20 @@ return {
       })
     end
   },
+
+  {
+    "akinsho/toggleterm.nvim",
+    version = "*", -- Palaging gamitin ang latest version
+    event = "VeryLazy", -- Load lang kapag kailangan
+    opts = {
+      size = 20, -- Terminal height (horizontal) o width (vertical)
+      open_mapping = [[<C-\>]], -- Toggle shortcut (Ctrl + \)
+      hide_numbers = true, -- Huwag ipakita ang line numbers
+      shade_terminals = false, -- Walang background shading (mas lightweight)
+      direction = "float", -- Default: Floating terminal
+      float_opts = {
+        border = "curved", -- Border style (single, double, curved, etc.)
+      },
+    }
+  }
 }
