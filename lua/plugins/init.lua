@@ -23,4 +23,23 @@ return {
   		},
   	},
   },
+
+  {
+    "rcarriga/nvim-notify",
+    event = "VeryLazy", -- Load only when needed
+    config = function()
+      local notify = require("notify")
+      vim.notify = notify
+
+      notify.setup({
+        stages = "static",  -- No animations (less processing)
+        timeout = 1500,     -- Short duration
+        background_colour = "None", -- No extra rendering
+        render = "minimal", -- No icons, compact text only
+        minimum_width = 1,
+        top_down = false,
+        fps = 1,
+      })
+    end
+  },
 }
