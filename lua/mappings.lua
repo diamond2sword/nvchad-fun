@@ -38,7 +38,6 @@ local _git = function(git_args)
   local gitbashpath = _gitbashpath()
   if not gitbashpath then return end
   local cmd = 'bash '.._gitbashpath()..' '..git_args
-  vim.notify(cmd)
   vim.fn.jobstart(cmd, {
     on_stdout = function()
       vim.notify_once(git_args)
