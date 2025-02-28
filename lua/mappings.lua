@@ -41,7 +41,7 @@ local _git = function(git_args)
   vim.notify(cmd)
   vim.fn.jobstart(cmd, {
     on_stdout = function()
-      vim.notify("Saved")
+      vim.notify_once("Saved")
     end
   })
   -- vim.ui.input(
