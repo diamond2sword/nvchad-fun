@@ -67,6 +67,9 @@ curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | 
 
 pkg install zoxide fzf vifm
 
+chsh -s zsh
+zsh; disown -a; exit
+
 # {
 # 	# vifm
 # 	local _name="vifm"
