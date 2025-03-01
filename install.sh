@@ -11,7 +11,7 @@ _move_config()
 	local _to="$3"
 	if [ -e "$_to/$_name.bak" ]; then
 		echo "ERROR: $_to/$_name.bak exists"; read -r
-	else
+	elif [ -e "$_to/$_name" ]; then
 		mv "$_to/$_name" "$_to/$_name.bak"
 	fi
 	cp -r "$_from/$_name" "$_to/"

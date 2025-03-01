@@ -58,7 +58,22 @@ zmodule completion
 
 # Fish-like syntax highlighting for Zsh.
 # zsh-users/zsh-syntax-highlighting must be sourced after completion
-zmodule zsh-users/zsh-syntax-highlighting
+
+_path=$HOME/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+_raw(){ echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
+_replace_once(){ sed -E "/^#/b; /$(_raw "$1")/!b; h; s/^/#/;p; g; s/$(_raw "$1")/$(_raw "$2")/g;" "$3"; }
+#echo -n "$(_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)" > $_path
+_as_file()
+{
+	local file="$1"; shift
+	if ! [ -f "$file" ]; then
+		"$@" > "$file"
+	fi
+	echo -n "$file"
+}
+#_cmdfile=$(_as_file $_path _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)
+#zmodule zsh-users/zsh-syntax-highlighting --source $_cmdfile
+zmodule zsh-users/zsh-syntax-highlighting --source $(_as_file $_path _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)
 # zmodule zsh-users/fast-syntax-highlighting
 
 # Fish-like history search (up arrow) for Zsh.

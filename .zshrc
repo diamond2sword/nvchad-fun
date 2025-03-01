@@ -16,7 +16,7 @@ _evalcache_clear_today()
 	fi
 	echo "Resetting _evalcache..." # RESET EVALCACHE COMMAND DITO
 	rm -rf "$DIR/"*  # Ilagay ang actual command na pang-reset
-	echo "$TODAY" > "$FLAG_FILE" # Update flag file
+	echo -n "$TODAY" > "$FLAG_FILE" # Update flag file
 	echo "Evalcache reset done for today."
 }
 _evalcache_clear_today
