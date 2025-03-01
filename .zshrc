@@ -7,6 +7,7 @@ _evalcache_clear_today()
 	local FLAG_FILE="$DIR/reset.flag"
 	local TODAY=$(date +%Y-%m-%d)
 	if [[ ! -f "$FLAG_FILE" ]]; then # Check kung na-reset na ngayong araw
+		mkdir -p "$DIR"
 		touch "$FLAG_FILE"
 	fi
 	local LAST_RESET=$(cat "$FLAG_FILE")
