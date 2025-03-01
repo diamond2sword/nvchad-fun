@@ -38,3 +38,9 @@ fi
 nvim --headless +'Lazy! sync' +q
 
 #git clone https://github.com/NvChad/starter $HOME/.config/nvim && nvim
+
+pkg install zsh
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
+
+pkg install zoxide fzf
