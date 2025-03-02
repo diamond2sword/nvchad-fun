@@ -139,14 +139,6 @@ if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
   fi
 fi
 
-# Initialize evalcache.
-_path=${ZIM_HOME}/modules/evalcache/evalcache.plugin.zsh
-if [ -f $_path ]; then
-	source $_path
-else
-	alias _evalcache=eval
-fi
-
 # Initialize zsh-defer.
 _defer=true
 _path=${ZIM_HOME}/modules/zsh-defer/zsh-defer.plugin.zsh
@@ -175,10 +167,10 @@ fi
 #		for highlighter_dir ($1/*/(/)); do
 # to:
 #		for highlighter_dir ($(bash -c "echo $1/*/")); do
-_path=$HOME/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-_raw(){ echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
-_replace_once(){ sed -E "/^#/b; /$(_raw "$1")/!b; h; s/^/#/;p; g; s/$(_raw "$1")/$(_raw "$2")/g;" "$3"; }
-echo -n "$(_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)" > $_path
+#_path=$HOME/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#_raw(){ echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
+#_replace_once(){ sed -E "/^#/b; /$(_raw "$1")/!b; h; s/^/#/;p; g; s/$(_raw "$1")/$(_raw "$2")/g;" "$3"; }
+#echo -n "$(_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)" > $_path
 
 # ------------------
 # Initialize modules.
@@ -255,6 +247,14 @@ for key ('k') bindkey -M vicmd ${key} history-substring-search-up
 for key ('j') bindkey -M vicmd ${key} history-substring-search-down
 unset key
 # }}} End configuration added by Zim install
+
+# Initialize evalcache.
+_path=${ZIM_HOME}/modules/evalcache/evalcache.plugin.zsh
+if [ -f $_path ]; then
+	source $_path
+else
+	alias _evalcache=eval
+fi
 
 #
 # zoxide

@@ -51,7 +51,7 @@ fi
 #	 termux-reload-settings
 # }
 
-# nvim --headless +'Lazy! sync' +q
+nvim --headless +'Lazy! sync' +q
 
 #git clone https://github.com/NvChad/starter $HOME/.config/nvim && nvim
 
@@ -67,8 +67,42 @@ curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | 
 
 pkg install zoxide fzf vifm
 
+if ! [[ "$(ps -o comm= -p $$)" =~ .*bash$ ]]; then
+	echo ERROR: shell is not bash; read -r
+fi
+
 chsh -s zsh
-zsh; disown -a; exit
+zsh
+#disown -a
+#exit
+_termux_session_pid()
+{
+	# kill the third from the most parent processes
+	# 1st: phone's
+	# 2nd: termux
+	# 3rd: session
+	_ppid(){ ps -o ppid= -p $1; }
+	_p=$$
+	_ps=()
+	while [[ "$_p" ]]; do
+		_ps+=("$_p")
+		_p=$(_ppid $_p)
+	done
+	_comm=""
+	_len=${#_ps[@]}
+	#_i=1
+	for ((_i=_len-1; _i>=0; _i--)); do
+		_p=${_ps[_i]}
+		_comm=$(ps -o comm= -p $_p)
+		[[ "$_comm" =~ ^.*$SHELL$ ]] && break
+	done
+	echo $_p 
+}
+kill -9 $(_termux_session_pid)
+
+
+
+#pkill -9 -f $SHELL
 
 # {
 # 	# vifm
