@@ -124,8 +124,9 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
 
 # ------------------
-# Initialize modules
+# Pre-Initialize modules
 # ------------------
+
 
 ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
 # Download zimfw plugin manager if missing.
@@ -139,9 +140,18 @@ if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
   fi
 fi
 
+# Install missing modules, and update ${ZIM_HOME}/init.zsh if missing or outdated.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} ]]; then
+	source ${ZIM_HOME}/zimfw.zsh init
+fi
+
+# ------------------
+# Initialize modules
+# ------------------
+
 # Initialize zsh-defer.
 _defer=true
-_path=${ZIM_HOME}/modules/zsh-defer/zsh-defer.plugin.zsh
+_path="${ZIM_HOME}/modules/zsh-defer/zsh-defer.plugin.zsh"
 if $_defer && [ -f $_path ]; then
 	source $_path
 else
@@ -149,32 +159,16 @@ else
 	_defer=false
 fi
 
-# Install missing modules, and update ${ZIM_HOME}/init.zsh if missing or outdated.
-if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} ]]; then
-	source ${ZIM_HOME}/zimfw.zsh init
+# Initialize evalcache.
+_path=${ZIM_HOME}/modules/evalcache/evalcache.plugin.zsh
+if [ -f $_path ]; then
+	source $_path
+else
+	_evalcache(){ eval "$("$@")"; }
 fi
 
-# ------------------
-# Post-install, Pre-source module configuration
-# ------------------
 
-#
-# zsh-syntax-highlighting
-#
 
-# Fix globbing issue in .zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# change:
-#		for highlighter_dir ($1/*/(/)); do
-# to:
-#		for highlighter_dir ($(bash -c "echo $1/*/")); do
-#_path=$HOME/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#_raw(){ echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
-#_replace_once(){ sed -E "/^#/b; /$(_raw "$1")/!b; h; s/^/#/;p; g; s/$(_raw "$1")/$(_raw "$2")/g;" "$3"; }
-#echo -n "$(_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)" > $_path
-
-# ------------------
-# Initialize modules.
-# ------------------
 if ! $_defer; then
 	source ${ZIM_HOME}/init.zsh
 else
@@ -183,23 +177,37 @@ else
 		# completion
 		# zsh-vi-mode
 		# powerlevel10k
+#		zsh-syntax-highlighting
+#		zsh-history-substring-search
+#		zsh-autosuggestions
 	)
 	must_defer=(
 		git
 		input
 		duration-info
 		git-info
-		evalcache
-		zsh-syntax-highlighting
+		# evalcache
+		#zsh-syntax-highlighting
 		zsh-autosuggestions
 		# asciiship
 		zsh-history-substring-search
 		completion
 		termtitle
-		zsh-defer
-		termtitle
+		# zsh-defer
+		# termtitle
 		# zsh-vi-mode
 	)
+#	_contains()
+#	{
+#		_found=false
+#		for _e in "${_l[@]}"; do
+#			if [[ "$1" == *"/modules/$_e/"* ]]; then
+#				_found=true
+#				break
+#			fi
+#		done
+#		return $_found
+#	}
 
 	for zline in ${(f)"$(<$ZIM_HOME/init.zsh)"}; do
 		if [[ $zline == source* ]]; then
@@ -213,6 +221,9 @@ else
 			if $must_remove; then
 				continue
 			fi
+#			if _l="${must_remove[@]}" _contains "$zline"; then
+#				continue
+#			fi
 			local defer_source=false
 			for must in "${must_defer[@]}"; do
 				if [[ $zline == *"/modules/$must/"* ]]; then
@@ -231,6 +242,44 @@ else
 	done
 fi
 
+
+# Initialiaze zsh-syntax-highlighting
+# Fix globbing issue in .zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# change:
+#		for highlighter_dir ($1/*/(/)); do
+# to:
+#		for highlighter_dir ($(bash -c "echo $1/*/")); do
+#_dir="${HOME}/.zim/modules/zsh-syntax-highlighting"
+#_path="${_dir}/zsh-syntax-highlighting.zsh"
+_path="${HOME}/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+_raw(){ echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
+_replace_once(){ sed -E "/^#/b; /$(_raw "$1")/!b; h; s/^/#/;p; g; s/$(_raw "$1")/$(_raw "$2")/g;" "$3"; }
+_as_locked_file()
+{
+	file="$1"; shift
+	if ! [ -f "$file" ]; then
+		#_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' "$file"
+		"$@" > "$file"
+	fi
+	echo -n "$file"
+}
+zsh-defer source $(_as_locked_file "$_path.fixed" _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' "$file")
+#zsh-defer _evalcache _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' "$file"
+#if ! [ -f "$_path.fixed" ]; then
+#	cat "$_path" | _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' > "$_path.fixed"
+#fi
+#zsh-defer source "$_path.fixed"
+#zsh-defer source "${HOME}/.zim/modules/completion/init.zsh"
+#zsh-defer source "${HOME}/.zim/modules/zsh-history-substring-search/zsh-history-substring-search.zsh"
+#zsh-defer source "${HOME}/.zim/modules/zsh-autosuggestions/zsh-autosuggestions.zsh"
+#zsh-defer _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' "$_path"
+#echo -n "$(_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)" > $_path
+#zsh-defer -c "source $_path"
+#(
+#	cd "${_dir}"
+#	zsh-defer _evalcache _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path
+#)
+
 # ------------------------------
 # Post-init module configuration
 # ------------------------------
@@ -248,14 +297,6 @@ for key ('j') bindkey -M vicmd ${key} history-substring-search-down
 unset key
 # }}} End configuration added by Zim install
 
-# Initialize evalcache.
-_path=${ZIM_HOME}/modules/evalcache/evalcache.plugin.zsh
-if [ -f $_path ]; then
-	source $_path
-else
-	alias _evalcache=eval
-fi
-
 #
 # zoxide
 #
@@ -266,4 +307,4 @@ _evalcache zoxide init zsh --cmd cd
 #
 _evalcache fzf --zsh
 
-# zprof
+#zprof

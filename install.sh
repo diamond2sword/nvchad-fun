@@ -51,7 +51,10 @@ fi
 #	 termux-reload-settings
 # }
 
-nvim --headless +'Lazy! sync' +q
+read -p 'Load Nvim? [y]: ' _must_load
+[[ "$_must_load" =~ ^[yY]$ ]] && {
+	nvim --headless +'Lazy! sync' +q
+}
 
 #git clone https://github.com/NvChad/starter $HOME/.config/nvim && nvim
 

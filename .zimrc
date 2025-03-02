@@ -24,7 +24,7 @@ zmodule utility
 # Optimization
 #
 
-zmodule mroth/evalcache
+zmodule mroth/evalcache -d
 zmodule romkatv/zsh-defer -d
 
 #
@@ -58,28 +58,33 @@ zmodule completion
 
 # Fish-like syntax highlighting for Zsh.
 # zsh-users/zsh-syntax-highlighting must be sourced after completion
-_as_temp()
-{
-	local file=$(mktemp)
-	cat > "$file"
-	echo -n "$file"
-}
-zmodule zsh-users/zsh-syntax-highlighting --source $(_as_temp << "EOF"
-	_path=$HOME/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-	#_path=$_dir/zsh-syntax-highlighting.zsh
-	_raw(){ echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
-	_replace_once(){ sed -E "/^#/b; /$(_raw "$1")/!b; h; s/^/#/;p; g; s/$(_raw "$1")/$(_raw "$2")/g;" "$3"; }
-	_as_file()
-	{
-		local file="$1"; shift
-		if ! [ -f "$file" ]; then
-			"$@" > "$file"
-		fi
-		echo -n "$file"
-	}
-	source $(_as_file $_path.fixed _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)
-EOF
-)
+#_as_temp()
+#{
+#	local file=$(mktemp)
+#	cat > "$file"
+#	echo -n "$file"
+#}
+#_dir=$HOME/.zim/modules/zsh-syntax-highlighting
+#_path=$_dir/zsh-syntax-highlighting.zsh
+#_raw(){ echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
+#_replace_once(){ sed -E "/^#/b; /$(_raw "$1")/!b; h; s/^/#/;p; g; s/$(_raw "$1")/$(_raw "$2")/g;" "$3"; }
+#_as_file()
+#{
+#	local file="$1"; shift
+#	if ! [ -f "$file" ]; then
+#		"$@" > "$file"
+#	fi
+#	echo -n "$file"
+#}
+
+zmodule zsh-users/zsh-syntax-highlighting -d
+#zmodule zsh-users/zsh-syntax-highlighting --source $(_as_file $_dir/_init.zsh << EOF
+#	$(declare -p _dir _path)
+#	$(declare -f _raw _replace_once _as_file)
+#	#_path=$_dir/zsh-syntax-highlighting.zsh
+#	source $(_as_file $_path.fixed _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)
+#EOF
+#)
 # zmodule zsh-users/fast-syntax-highlighting
 
 # Fish-like history search (up arrow) for Zsh.
