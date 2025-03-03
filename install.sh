@@ -64,6 +64,7 @@ _move_config vifm $NVIM_PATH $HOME/.config
 _move_config .zshrc $NVIM_PATH $HOME
 _move_config .zimrc $NVIM_PATH $HOME
 _move_config .termux $NVIM_PATH $HOME
+_move_config .p10k.zsh $NVIM_PATH $HOME
 termux-reload-settings
 
 curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
