@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 cd "$HOME" || exit 1
 
 NVIM_PATH="$HOME/.config/nvim"
