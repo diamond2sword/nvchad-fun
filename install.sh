@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 cd "$HOME" || exit 1
 
 NVIM_PATH="$HOME/.config/nvim"
@@ -66,6 +65,8 @@ _move_config .zshrc $NVIM_PATH $HOME
 _move_config .zimrc $NVIM_PATH $HOME
 _move_config .termux $NVIM_PATH $HOME
 _move_config .p10k.zsh $NVIM_PATH $HOME
+_move_config .f-sy-h $NVIM_PATH $HOME
+#_move_config motd $NVIM_PATH $PREFIX/etc
 termux-reload-settings
 
 curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh

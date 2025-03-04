@@ -1,4 +1,7 @@
-zmodload zsh/zprof
+# zmodload zsh/zprof
+
+clear
+# clear && fastfetch
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc
 _cache="${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -106,7 +109,7 @@ ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
 # Customize the style that the suggestions are shown with.
 # See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
-# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=247'
 
 #
 # zsh-syntax-highlighting
@@ -170,12 +173,21 @@ if ! $_defer; then
 	source ${ZIM_HOME}/init.zsh
 else
 	removes=(
-		asciiship
+		powerlevel10k
+		# asciiship
 	)
 	must_defer=(
-		duration-info
-		git-info
+		environment
+		input
+		git
+		utility
 		termtitle
+		git-info
+		duration-info
+		completion
+		F-Sy-H
+		zsh-history-substring-search
+		zsh-autosuggestions
 	)
 	for zline in ${(f)"$(<$ZIM_HOME/init.zsh)"}; do
 		if [[ $zline == source* ]]; then
@@ -229,5 +241,10 @@ unset key
 #
 _evalcache zoxide init zsh --cmd cd
 _evalcache fzf --zsh
+
+#
+# bindings
+#
+(( ! ${+functions[p10k]} )) || p10k finalize
 
 #zprof

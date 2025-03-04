@@ -19,7 +19,6 @@ zmodule termtitle
 # Utility aliases and functions. Adds colour to ls, grep and less.
 zmodule utility
 
-
 #
 # Optimization
 #
@@ -35,10 +34,10 @@ zmodule romkatv/zsh-defer -d
 zmodule duration-info
 # Exposes git repository status information to prompts, used by asciiship.
 zmodule git-info
-# A heavily reduced, ASCII-only version of the Spaceship and Starship prompts.
-#zmodule asciiship
 # Powerline10k Instant Prompt
 zmodule romkatv/powerlevel10k
+# A heavily reduced, ASCII-only version of the Spaceship and Starship prompts.
+zmodule asciiship
 # zmodule ohmyzsh/ohmyzsh --root themes --source robbyrussell.zsh-theme
 
 #
@@ -81,37 +80,75 @@ zmodule completion
 _as_temp()
 {
 	local file
-	file=$(mktemp)
+	file=$(mktemp "$@")
 	cat > "$file"
 	echo -n "$file"
 }
 
-zmodule zsh-users/zsh-syntax-highlighting --on-pull "source $(_as_temp << "EOF"
-	_raw()
-	{
-		echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g';
-	}
-	_replace_once()
-	{
-		_1="$(_raw "$1")"
-		if grep -Eq "^[^#].*$_1" "$3" &>/dev/null; then
-			sed -Ei "/^#/b; /$_1/!b; h; s/^/#/;p; g; s/$_1/$(_raw "$2")/g;" "$3";
-		fi
-	}
-	_dir="${HOME}/.zim/modules/zsh-syntax-highlighting"
-	_path="$_dir/zsh-syntax-highlighting.zsh"
-	_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' "$_path"
-EOF
-)"
-#zmodule zsh-users/zsh-syntax-highlighting --source $(_as_file $_dir/_init.zsh << EOF
-#	$(declare -p _dir _path)
-#	$(declare -f _raw _replace_once _as_file)
-#	#_path=$_dir/zsh-syntax-highlighting.zsh
-#	source $(_as_file $_path.fixed _replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' $_path)
-#EOF
-#)
-# zmodule zsh-users/fast-syntax-highlighting
+_as_module_file()
+{
+	[[ "$1" ]] || { echo ERROR: no input; exit 1; }
+	local module=$1
+	local filename=$2	
 
+	local dir=$ZIM_HOME/modules/$module
+	mkdir -p $dir
+
+	#local file=$dir/$filename
+	#[[ "$2" ]] || file=$(mktemp -pu $dir)
+	#${ZDOTDIR:-${HOME}}
+	local file=$dir/${filename:-$(mktemp -up . -t zimrc.XXX)}
+
+	cat > $file
+	echo -n $file
+}
+
+# zmodule dracula/zsh-syntax-highlighting --name dracula --source zsh-syntax-highlighting.sh
+
+#zmodule zsh-users/zsh-syntax-highlighting --on-pull "source $(_as_temp << "EOF"
+#	_raw(){	echo -n "$1" | sed -E 's/([][().*?+^$|{}\/])/\\\1/g'; }
+#	_replace_once(){ _1="$(_raw "$1")"; grep -Eq "^[^#].*$_1" "$3" &>/dev/null && sed -Ei "/^#/b; /$_1/!b; h; s/^/#/;p; g; s/$_1/$(_raw "$2")/g;" "$3"; }
+#	_path="${HOME}/.zim/modules/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+#	_replace_once '($1/*/(/))' '($(bash -c "echo $1/*/"))' "$_path"
+#EOF
+#)"
+
+zmodule z-shell/F-Sy-H --source F-Sy-H.plugin.zsh --source $(_as_module_file F-Sy-H helpers.zsh << "EOF"
+	_fsyh_themes_tried=()
+	fsyh-next-theme()
+	{
+		_list(){ cd $1 && find *.ini | sed -E "s/^(.*).ini/${2:+$2:}\1/" }
+		local _themes=($(
+			_list $ZIM_HOME/modules/F-Sy-H/themes
+			_list $HOME/.config/f-sy-h CONFIG
+			_list $HOME/.cache/f-sy-h CACHE
+			_list $HOME/.f-sy-h HOME
+		)) 2>/dev/null
+		local _untried_theme _theme _i
+		for _i in $(seq ${#_themes[@]} | shuf); do
+			_theme=${_themes[_i]}
+			[[ " ${_fsyh_themes_tried[@]} " =~ " $_theme " ]] || {
+				_untried_theme=$_theme
+			}
+		done
+		[[ "$_untried_theme" ]] || {
+			_untried_theme=$_theme
+			_fsyh_themes_tried=()
+		}
+		_fsyh_themes_tried+=($_theme)
+		fast-theme $_theme &>/dev/null
+		fast-theme -s
+		fast-theme "$@" $_theme
+	}
+EOF
+) --use git --on-pull "source $(_as_module_file F-Sy-H on-pull.zsh << "EOF"
+	source F-Sy-H.plugin.zsh
+	_theme=dracula
+	[ -f $HOME/.f-sy-h/$_theme.ini ] && {
+		fast-theme HOME:$_theme
+	} || echo Dracula theme not found
+EOF
+)" 
 # Fish-like history search (up arrow) for Zsh.
 # zsh-users/zsh-history-substring-search must be sourced after zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
@@ -124,4 +161,5 @@ zmodule zsh-users/zsh-history-substring-search
 zmodule zsh-users/zsh-autosuggestions
 
 # }}} End configuration added by Zim install
+
 
