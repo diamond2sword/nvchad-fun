@@ -143,7 +143,9 @@ if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
 fi
 
 # Install missing modules, and update ${ZIM_HOME}/init.zsh if missing or outdated.
+_defer=true
 if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} ]]; then
+	_defer=false # don't defer on update
 	source ${ZIM_HOME}/zimfw.zsh init
 fi
 
@@ -152,7 +154,6 @@ fi
 # ------------------
 
 # Initialize zsh-defer.
-_defer=true
 _path="${ZIM_HOME}/modules/zsh-defer/zsh-defer.plugin.zsh"
 if $_defer && [ -f $_path ]; then
 	source $_path
@@ -160,6 +161,7 @@ else
 	alias zsh-defer=eval
 	_defer=false
 fi
+
 
 # Initialize evalcache.
 _path=${ZIM_HOME}/modules/evalcache/evalcache.plugin.zsh
@@ -177,17 +179,17 @@ else
 		# asciiship
 	)
 	must_defer=(
-#		environment
-#		input
-#		git
-#		utility
-#		termtitle
-#		git-info
-#		duration-info
-#		completion
-#		F-Sy-H
-#		zsh-history-substring-search
-#		zsh-autosuggestions
+		environment
+		input
+		git
+		utility
+		termtitle
+		git-info
+		duration-info
+		completion
+		F-Sy-H
+		zsh-history-substring-search
+		zsh-autosuggestions
 	)
 	for zline in ${(f)"$(<$ZIM_HOME/init.zsh)"}; do
 		if [[ $zline == source* ]]; then
@@ -218,6 +220,7 @@ else
 		fi
 	done
 fi
+
 
 # ------------------------------
 # Post-init module configuration
