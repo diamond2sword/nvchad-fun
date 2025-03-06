@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 cd "$HOME" || exit 1
 
 NVIM_PATH="$HOME/.config/nvim"
@@ -17,16 +18,31 @@ _move_config()
 	cp -r "$_from/$_name" "$_to/"
 }
 
+{
+	pkg update && pkg upgrade
+	termux-setup-storage
+}
+
 
 {
 	pkg install termux-api openssl neovim clang python ripgrep luajit luarocks nodejs man
 	luarocks install jsregexp
 }
 
+npm-g-install()
+{
+	local _installed _pending _pkg
+	_pending=("$@")
+	_installed="$(npm -g list | tail -n +2 | cut -d' ' -f2 | cut -d@ -f1)"
+	for _pkg in ${_pending[@]}; do
+		grep -q "$_pkg" <<< "${_installed[@]}" || npm -g install "$_pkg"
+	done
+}
+
 {
 	# language servers
 	pkg install lua-language-server shellcheck shfmt
-	npm -g install basedpyright bash-language-server
+	npm-g-install basedpyright bash-language-server
 }
 
 
@@ -53,7 +69,7 @@ fi
 
 read -p 'Load Nvim? [y]: ' _must_load
 [[ "$_must_load" =~ ^[yY]$ ]] && {
-	nvim --headless +'Lazy! sync' +q
+	nvim --headless +'Lazy sync' +q
 }
 
 #git clone https://github.com/NvChad/starter $HOME/.config/nvim && nvim
