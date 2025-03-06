@@ -19,7 +19,7 @@ _move_config()
 
 
 {
-	pkg install neovim clang python ripgrep luajit luarocks nodejs man
+	pkg install termux-api openssl neovim clang python ripgrep luajit luarocks nodejs man
 	luarocks install jsregexp
 }
 

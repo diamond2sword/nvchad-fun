@@ -177,17 +177,17 @@ else
 		# asciiship
 	)
 	must_defer=(
-		environment
-		input
-		git
-		utility
-		termtitle
-		git-info
-		duration-info
-		completion
-		F-Sy-H
-		zsh-history-substring-search
-		zsh-autosuggestions
+#		environment
+#		input
+#		git
+#		utility
+#		termtitle
+#		git-info
+#		duration-info
+#		completion
+#		F-Sy-H
+#		zsh-history-substring-search
+#		zsh-autosuggestions
 	)
 	for zline in ${(f)"$(<$ZIM_HOME/init.zsh)"}; do
 		if [[ $zline == source* ]]; then

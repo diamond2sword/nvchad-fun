@@ -91,7 +91,7 @@ _as_module_file()
 	local module=$1
 	local filename=$2	
 
-	local dir=$ZIM_HOME/modules/$module
+	local dir=$ZIM_HOME/modules/zimrc/$module
 	mkdir -p $dir
 
 	#local file=$dir/$filename
@@ -113,7 +113,14 @@ _as_module_file()
 #EOF
 #)"
 
-zmodule z-shell/F-Sy-H --source F-Sy-H.plugin.zsh --source $(_as_module_file F-Sy-H helpers.zsh << "EOF"
+zmodule z-shell/F-Sy-H --on-pull "source $(_as_module_file F-Sy-H on-pull.zsh << "EOF"
+	source F-Sy-H.plugin.zsh
+	_theme=mcgi
+	[ -f $HOME/.f-sy-h/$_theme.ini ] && {
+		fast-theme HOME:$_theme
+	} || echo $_theme theme not found
+EOF
+)" --source F-Sy-H.plugin.zsh --source $(_as_module_file F-Sy-H user.zsh << "EOF"
 	_fsyh_themes_tried=()
 	fsyh-next-theme()
 	{
@@ -141,14 +148,7 @@ zmodule z-shell/F-Sy-H --source F-Sy-H.plugin.zsh --source $(_as_module_file F-S
 		fast-theme "$@" $_theme
 	}
 EOF
-) --use git --on-pull "source $(_as_module_file F-Sy-H on-pull.zsh << "EOF"
-	source F-Sy-H.plugin.zsh
-	_theme=dracula
-	[ -f $HOME/.f-sy-h/$_theme.ini ] && {
-		fast-theme HOME:$_theme
-	} || echo Dracula theme not found
-EOF
-)" 
+)
 # Fish-like history search (up arrow) for Zsh.
 # zsh-users/zsh-history-substring-search must be sourced after zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
