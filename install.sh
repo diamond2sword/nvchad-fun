@@ -20,12 +20,13 @@ _move_config()
 
 {
 	pkg update && pkg upgrade
+	pkg install termux-api openssl
 	termux-setup-storage
 }
 
 
 {
-	pkg install termux-api openssl neovim clang python ripgrep luajit luarocks nodejs man
+	pkg install neovim clang python ripgrep luajit luarocks nodejs man
 	luarocks install jsregexp
 }
 
@@ -44,8 +45,6 @@ npm-g-install()
 	pkg install lua-language-server shellcheck shfmt
 	npm-g-install basedpyright bash-language-server
 }
-
-
 
 pkg install gh git expect
 
@@ -67,74 +66,64 @@ fi
 #	 termux-reload-settings
 # }
 
-read -p 'Load Nvim? [y]: ' _must_load
+echo -n 'Load Nvim? [y]: '
+read_must_load
 [[ "$_must_load" =~ ^[yY]$ ]] && {
-	nvim --headless +'Lazy sync' +q
+	nvim --headless '+Lazy sync' +qa
 }
 
 #git clone https://github.com/NvChad/starter $HOME/.config/nvim && nvim
 
-pkg install zsh
 # sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-_move_config vifm $NVIM_PATH $HOME/.config
-_move_config .zshrc $NVIM_PATH $HOME
-_move_config .zimrc $NVIM_PATH $HOME
-_move_config .termux $NVIM_PATH $HOME
-_move_config .p10k.zsh $NVIM_PATH $HOME
-_move_config .f-sy-h $NVIM_PATH $HOME
-#_move_config motd $NVIM_PATH $PREFIX/etc
-termux-reload-settings
 
-curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
-
-pkg install zoxide fzf vifm
-
-if ! [[ "$(ps -o comm= -p $$)" =~ .*bash$ ]]; then
-	echo ERROR: shell is not bash; read -r
-fi
-
-chsh -s zsh
-zsh
-#disown -a
-#exit
-_termux_session_pid()
 {
-	# kill the third from the most parent processes
-	# 1st: phone's
-	# 2nd: termux
-	# 3rd: session
-	_ppid(){ ps -o ppid= -p $1; }
-	_p=$$
-	_ps=()
-	while [[ "$_p" ]]; do
-		_ps+=("$_p")
-		_p=$(_ppid $_p)
-	done
-	_comm=""
-	_len=${#_ps[@]}
-	#_i=1
-	for ((_i=_len-1; _i>=0; _i--)); do
-		_p=${_ps[_i]}
-		_comm=$(ps -o comm= -p $_p)
-		[[ "$_comm" =~ ^.*$SHELL$ ]] && break
-	done
-	echo $_p 
+	# zsh
+	pkg install zsh
+
+	_move_config vifm $NVIM_PATH $HOME/.config
+	_move_config .zshrc $NVIM_PATH $HOME
+	_move_config .zimrc $NVIM_PATH $HOME
+	_move_config .termux $NVIM_PATH $HOME
+	_move_config .p10k.zsh $NVIM_PATH $HOME
+	_move_config .f-sy-h $NVIM_PATH $HOME
+	termux-reload-settings
+
+	curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
+
+	pkg install zoxide fzf vifm
+
+	if ! [[ "$(ps -o comm= -p $$)" =~ .*bash$ ]]; then
+		echo ERROR: shell is not bash; read -r
+	fi
+
+	chsh -s zsh
+	zsh
 }
-kill -9 $(_termux_session_pid)
-
-
-
-#pkill -9 -f $SHELL
-
-# {
-# 	# vifm
-# 	local _name="vifm"
-# 	local _path="$HOME/.config/$_name"
-#	 if [ -f "$_path.bak" ]; then
-#		 echo "ERROR: $_path.bak exists"; read -r
-#	 else
-#		 cp -r "$_path" "$_path.bak"
-#	 fi
-# 	cp -r "$CMD_DIR/$_name" "$_path"
-# }
-
+#disown -a
+{
+	# auto exit
+	_termux_session_pid()
+	{
+		# kill the third from the most parent processes
+		# 1st: phone's
+		# 2nd: termux
+		# 3rd: session
+		_ppid(){ ps -o ppid= -p $1; }
+		_p=$$
+		_ps=()
+		while [[ "$_p" ]]; do
+			_ps+=("$_p")
+			_p=$(_ppid $_p)
+		done
+		_comm=""
+		_len=${#_ps[@]}
+		#_i=1
+		for ((_i=_len-1; _i>=0; _i--)); do
+			_p=${_ps[_i]}
+			_comm=$(ps -o comm= -p $_p)
+			[[ "$_comm" =~ ^.*$SHELL$ ]] && break
+		done
+		echo $_p 
+	}
+	kill -9 $(_termux_session_pid)
+}
