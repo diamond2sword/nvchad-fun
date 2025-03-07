@@ -1,10 +1,10 @@
 #!/bin/bash
 
-_pkg(){ pkg "$@"; }
+_pkg(){ pkg "$@" -y; }
 _pause(){ read -r < /dev/tty; }
 _termux_setup_storage(){ termux-setup-storage; }
 if [[ "$_auto" == true ]]; then
-	_pkg(){ pkg -y "$@"; }
+	_pkg(){ pkg "$@" -y; }
 	_pause(){ :; }
 	_termux_setup_storage(){ yes | termux-setup-storage; }
 fi
@@ -45,7 +45,7 @@ _npm_g_install()
 	_pending=("$@")
 	_installed="$(npm -g list | tail -n +2 | cut -d' ' -f2 | cut -d@ -f1)"
 	for _pkg in ${_pending[@]}; do
-		grep -q "$_pkg" <<< "${_installed[@]}" || npm -g install "$_pkg"
+		grep -q "$_pkg" <<< "${_installed[@]}" || npm -g install "$_pkg" --verbose
 	done
 }
 	
