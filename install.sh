@@ -73,12 +73,12 @@ _termux_session_pid()
 	echo $_p 
 }
 
-CMD_DIR=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
+CMD_DIR=$(cd $(dirname $0); pwd)
 NVIM_PATH="$HOME/.config/nvim"
 {
 	_pkg update && _pkg upgrade
 	_pkg install termux-api openssl
-	_termux-setup-storage
+	_termux_setup_storage
 }
 
 {
@@ -104,6 +104,7 @@ NVIM_PATH="$HOME/.config/nvim"
 	fi
 
 	nvim --headless '+Lazy! sync' +qa
+	nvim --headless '+Lazy load nvim-treesitter' '+TSUpdateSync' +qa
 }
 
 {
