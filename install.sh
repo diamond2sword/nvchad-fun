@@ -64,7 +64,7 @@ read _must_load
 	# zsh
 	pkg install zsh
 
-	_move_config vifm $NVIM_PATH $HOME/.config
+	_move_config .vifm $NVIM_PATH $HOME
 	_move_config .zshrc $NVIM_PATH $HOME
 	_move_config .zimrc $NVIM_PATH $HOME
 	_move_config .termux $NVIM_PATH $HOME

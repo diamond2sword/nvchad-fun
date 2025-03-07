@@ -1,4 +1,4 @@
-" vim: filetype=vifm :
+" vim: filetype=vim :
 " Sample configuration file for vifm (last updated: 18 December, 2024)
 " You can edit this file by hand.
 " The " character at the beginning of a line comments out the line.
@@ -590,5 +590,7 @@ nnoremap <a-o> :sync %c<cr>
 " ------------------------------------------------------------------------------
 
 colorscheme dracula
-source $HOME/.config/vifm/scripts/favicons.vifm
 
+let $config_dir = system('dirname '.$MYVIFMRC)
+let $script_dir = $config_dir.'/scripts'
+execute system('find '.$script_dir.' -mindepth 1 -maxdepth 1 | grep \.vifm$ | xargs -n1 -I{} echo -n "| source {}"')
