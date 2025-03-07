@@ -104,7 +104,6 @@ NVIM_PATH="$HOME/.config/nvim"
 	fi
 
 	nvim --headless '+Lazy! sync' +qa
-	nvim --headless '+Lazy load nvim-treesitter' '+TSUpdateSync' +qa
 }
 
 {
