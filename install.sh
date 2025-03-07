@@ -1,10 +1,28 @@
 #!/bin/bash
 
 _pkg(){ pkg "$@"; }
-_yes(){ "$(cat)"; }
+_pause(){ read -r < /dev/tty; }
+_termux_setup_storage(){ termux-setup-storage; }
 if [[ "$_yes" == true ]]; then
 	_pkg(){ pkg -y "$@"; }
-	_yes(){ yes | "$(cat)"; }
+	_pause(){ :; }
+	_termux_setup_storage(){ yes | termux-setup-storage; }
+fi
+
+(return 0 2>/dev/null)
+if [[ "$?" != 0 ]]; then
+	echo ERROR: must be sourced; _pause
+	exit 1
+fi
+
+if ! [[ "$SHELL" =~ .*bash$ ]]; then
+	echo ERROR: shell is not bash; _pause
+	return 1
+fi
+
+if ! cd "$HOME"; then
+	echo ERROR: cannot cd to \$HOME; _pause
+	return 1
 fi
 
 _move_config()
@@ -13,12 +31,13 @@ _move_config()
 	local _from="$2"
 	local _to="$3"
 	if [ -e "$_to/$_name.bak" ]; then
-		echo "ERROR: $_to/$_name.bak exists"; read -r
+		echo "ERROR: $_to/$_name.bak exists"; _pause
 	elif [ -e "$_to/$_name" ]; then
 		mv "$_to/$_name" "$_to/$_name.bak"
 	fi
 	cp -r "$_from/$_name" "$_to/"
 }
+
 
 _npm_g_install()
 {
@@ -54,16 +73,13 @@ _termux_session_pid()
 	echo $_p 
 }
 
-cd "$HOME" || exit 1
-
 CMD_DIR=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
 NVIM_PATH="$HOME/.config/nvim"
 {
 	_pkg update && _pkg upgrade
 	_pkg install termux-api openssl
-	_yes <<< termux-setup-storage
+	_termux-setup-storage
 }
-
 
 {
 	_pkg install neovim clang python ripgrep luajit luarocks nodejs man
@@ -81,14 +97,12 @@ NVIM_PATH="$HOME/.config/nvim"
 	_pkg install gh git expect
 
 	if [ -d "$NVIM_PATH" ]; then
-		echo "ERROR: $NVIM_PATH exists"; read -r
+		echo "ERROR: $NVIM_PATH exists"; _pause
 	else
 		mkdir -p "$NVIM_PATH"
 		git clone https://github.com/diamond2sword/nvchad-fun "$NVIM_PATH"
 	fi
 
-	echo -n 'Load Nvim? [y]: '
-	_yes <<< read _must_load
 	nvim --headless '+Lazy! sync' +qa
 }
 
@@ -96,20 +110,14 @@ NVIM_PATH="$HOME/.config/nvim"
 	# zsh
 	_pkg install zsh zoxide fzf vifm
 
-	_yes << EOF
 	_move_config .vifm $NVIM_PATH $HOME
 	_move_config .zshrc $NVIM_PATH $HOME
 	_move_config .zimrc $NVIM_PATH $HOME
 	_move_config .termux $NVIM_PATH $HOME
 	_move_config .p10k.zsh $NVIM_PATH $HOME
 	_move_config .f-sy-h $NVIM_PATH $HOME
-EOF
 
 	curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
-
-	if ! [[ "$(ps -o comm= -p $$)" =~ .*bash$ ]]; then
-		echo ERROR: shell is not bash; read -r
-	fi
 
 	termux-reload-settings
 	chsh -s zsh
