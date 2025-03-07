@@ -56,6 +56,10 @@ exec_git_command () {
 }
 
 declare_git_commands () {
+	view () {
+		gh repo view --web
+	}
+
 	update_repos () {
 		for_each_repo install_git_bash_to_repo
 	}
