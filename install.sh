@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _pkg(){ pkg "$@"; }
-_pause(){ read -r < /dev/tty; }
+_pause(){ read; }
 _termux_setup_storage(){ termux-setup-storage; }
 if [[ "$_auto" == true ]]; then
 	_pkg(){ yes | pkg "$@"; }
