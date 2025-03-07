@@ -1,5 +1,12 @@
 #!/bin/bash
 
+_pkg(){ pkg "$@"; }
+_yes(){ "$(cat)"; }
+if [[ "$_yes" == true ]]; then
+	_pkg(){ pkg -y "$@"; }
+	_yes(){ yes | "$(cat)"; }
+fi
+
 _move_config()
 {
 	local _name="$1"
@@ -52,26 +59,26 @@ cd "$HOME" || exit 1
 CMD_DIR=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
 NVIM_PATH="$HOME/.config/nvim"
 {
-	pkg update && pkg upgrade
-	pkg install termux-api openssl
-	termux-setup-storage
+	_pkg update && _pkg upgrade
+	_pkg install termux-api openssl
+	_yes <<< termux-setup-storage
 }
 
 
 {
-	pkg install neovim clang python ripgrep luajit luarocks nodejs man
+	_pkg install neovim clang python ripgrep luajit luarocks nodejs man
 	luarocks install jsregexp
 }
 
 {
 	# language servers
-	pkg install lua-language-server shellcheck shfmt
+	_pkg install lua-language-server shellcheck shfmt
 	_npm_g_install basedpyright bash-language-server
 }
 
 {
 	# github
-	pkg install gh git expect
+	_pkg install gh git expect
 
 	if [ -d "$NVIM_PATH" ]; then
 		echo "ERROR: $NVIM_PATH exists"; read -r
@@ -81,23 +88,24 @@ NVIM_PATH="$HOME/.config/nvim"
 	fi
 
 	echo -n 'Load Nvim? [y]: '
-	read _must_load
+	_yes <<< read _must_load
 	nvim --headless '+Lazy! sync' +qa
 }
 
 {
 	# zsh
-	pkg install zsh zoxide fzf vifm
+	_pkg install zsh zoxide fzf vifm
 
+	_yes << EOF
 	_move_config .vifm $NVIM_PATH $HOME
 	_move_config .zshrc $NVIM_PATH $HOME
 	_move_config .zimrc $NVIM_PATH $HOME
 	_move_config .termux $NVIM_PATH $HOME
 	_move_config .p10k.zsh $NVIM_PATH $HOME
 	_move_config .f-sy-h $NVIM_PATH $HOME
+EOF
 
 	curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
-
 
 	if ! [[ "$(ps -o comm= -p $$)" =~ .*bash$ ]]; then
 		echo ERROR: shell is not bash; read -r
