@@ -3,7 +3,7 @@
 _pkg(){ pkg "$@"; }
 _pause(){ read -r < /dev/tty; }
 _termux_setup_storage(){ termux-setup-storage; }
-if [[ "$_yes" == true ]]; then
+if [[ "$_auto" == true ]]; then
 	_pkg(){ pkg -y "$@"; }
 	_pause(){ :; }
 	_termux_setup_storage(){ yes | termux-setup-storage; }
