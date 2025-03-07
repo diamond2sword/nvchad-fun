@@ -1,4 +1,5 @@
 return {
+  concurrency = 8,
   defaults = { lazy = true },
   install = { colorscheme = { "nvchad" } },
 
