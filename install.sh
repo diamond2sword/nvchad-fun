@@ -1,10 +1,9 @@
 #!/bin/bash
 
-
 cd "$HOME" || exit 1
 
-NVIM_PATH="$HOME/.config/nvim"
 CMD_DIR=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
+NVIM_PATH="$HOME/.config/nvim"
 _move_config()
 {
 	local _name="$1"
@@ -55,26 +54,11 @@ else
 	git clone https://github.com/diamond2sword/nvchad-fun "$NVIM_PATH"
 fi
 
-
-# {
-#	 if [ -f "$HOME/.termux.bak" ]; then
-#		 echo "ERROR: $HOME/.termux.bak exists"; read -r
-#	 else
-#		 cp -r "$HOME/.termux" "$HOME/.termux.bak"
-#	 fi
-#	 cp -rf "$CMD_DIR/.termux" "$HOME/.termux"
-#	 termux-reload-settings
-# }
-
 echo -n 'Load Nvim? [y]: '
-read_must_load
+read _must_load
 [[ "$_must_load" =~ ^[yY]$ ]] && {
 	nvim --headless '+Lazy sync' +qa
 }
-
-#git clone https://github.com/NvChad/starter $HOME/.config/nvim && nvim
-
-# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 {
 	# zsh
