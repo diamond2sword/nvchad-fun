@@ -109,6 +109,9 @@ NVIM_PATH="$HOME/.config/nvim"
 {
 	# zsh
 	_pkg install zsh zoxide fzf vifm
+	curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
+	termux-reload-settings
+	chsh -s zsh
 
 	_move_config .vifm $NVIM_PATH $HOME
 	_move_config .zshrc $NVIM_PATH $HOME
@@ -117,10 +120,6 @@ NVIM_PATH="$HOME/.config/nvim"
 	_move_config .p10k.zsh $NVIM_PATH $HOME
 	_move_config .f-sy-h $NVIM_PATH $HOME
 
-	curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
-
-	termux-reload-settings
-	chsh -s zsh
 	zsh
 }
 #disown -a

@@ -249,5 +249,6 @@ _evalcache fzf --zsh
 # bindings
 #
 (( ! ${+functions[p10k]} )) || p10k finalize
+clear
 
 #zprof
