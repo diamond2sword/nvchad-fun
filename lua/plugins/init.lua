@@ -22,6 +22,9 @@ return {
   			-- "vim", "lua", "vimdoc",
   			--   "html", "css"
   		},
+			lazy = true,
+			build = ':TSUpdate',
+			event = 'BufReadPre',
   	},
   },
 
