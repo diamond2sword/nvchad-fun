@@ -1,4 +1,4 @@
-# zmodload zsh/zprof
+#	zmodload zsh/zprof
 
 clear
 # clear && fastfetch
@@ -175,7 +175,7 @@ if ! $_defer; then
 	source ${ZIM_HOME}/init.zsh
 else
 	removes=(
-		powerlevel10k
+		# powerlevel10k
 		# asciiship
 	)
 	must_defer=(
@@ -249,6 +249,6 @@ _evalcache fzf --zsh
 # bindings
 #
 (( ! ${+functions[p10k]} )) || p10k finalize
-clear
+# clear
 
-#zprof
+# zprof

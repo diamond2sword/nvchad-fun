@@ -25,7 +25,36 @@ zmodule utility
 #
 
 zmodule mroth/evalcache -d
-zmodule romkatv/zsh-defer -d
+# zmodule romkatv/zsh-defer -d
+
+
+
+_as_temp()
+{
+	local file
+	file=$(mktemp "$@")
+	cat > "$file"
+	echo -n "$file"
+}
+
+_as_module_file()
+{
+	[[ "$1" ]] || { echo ERROR: no input; exit 1; }
+	local module=$1
+	local filename=$2	
+
+	local dir=$ZIM_HOME/modules/zimrc/$module
+	mkdir -p $dir
+
+	#local file=$dir/$filename
+	#[[ "$2" ]] || file=$(mktemp -pu $dir)
+	#${ZDOTDIR:-${HOME}}
+	local file=$dir/${filename:-$(mktemp -up . -t zimrc.XXX)}
+
+	cat > $file
+	echo -n $file
+}
+
 
 #
 # Prompt
@@ -36,10 +65,18 @@ zmodule duration-info
 # Exposes git repository status information to prompts, used by asciiship.
 zmodule git-info
 # Powerline10k Instant Prompt
-# zmodule romkatv/powerlevel10k -d
+# zmodule romkatv/powerlevel10k
 # A heavily reduced, ASCII-only version of the Spaceship and Starship prompts.
 zmodule asciiship
-# zmodule ohmyzsh/ohmyzsh --root themes --source robbyrussell.zsh-theme
+
+# robbyrussell
+#zmodule robbyrussell --use mkdir --on-pull "source $(_as_temp << "EOF"
+#	curl -o robbyrussell.zsh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/themes/robbyrussell.zsh-theme
+#	curl -o git.zsh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/lib/git.zsh
+#EOF
+#)" --cmd 'autoload -U colors && colors' --source git.zsh --source robbyrussell.zsh-theme
+#zmodule prompt-pwd
+#zmodule gitster
 
 #
 # Completion
@@ -78,31 +115,6 @@ zmodule completion
 #}
 
 
-_as_temp()
-{
-	local file
-	file=$(mktemp "$@")
-	cat > "$file"
-	echo -n "$file"
-}
-
-_as_module_file()
-{
-	[[ "$1" ]] || { echo ERROR: no input; exit 1; }
-	local module=$1
-	local filename=$2	
-
-	local dir=$ZIM_HOME/modules/zimrc/$module
-	mkdir -p $dir
-
-	#local file=$dir/$filename
-	#[[ "$2" ]] || file=$(mktemp -pu $dir)
-	#${ZDOTDIR:-${HOME}}
-	local file=$dir/${filename:-$(mktemp -up . -t zimrc.XXX)}
-
-	cat > $file
-	echo -n $file
-}
 
 # zmodule dracula/zsh-syntax-highlighting --name dracula --source zsh-syntax-highlighting.sh
 
