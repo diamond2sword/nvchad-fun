@@ -117,8 +117,9 @@ NVIM_PATH="$HOME/.config/nvim"
 	_move_config .termux $NVIM_PATH $HOME
 	_move_config .p10k.zsh $NVIM_PATH $HOME
 	_move_config .f-sy-h $NVIM_PATH $HOME
-	termux-reload-settings
+	_move_config motd $NVIM_PATH $PREFIX/etc
 
+	termux-reload-settings
 	chsh -s zsh
 	zsh
 }
