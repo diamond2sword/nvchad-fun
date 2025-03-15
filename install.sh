@@ -79,6 +79,10 @@ NVIM_PATH="$HOME/.config/nvim"
 	_pkg update && _pkg upgrade
 	_pkg install termux-api openssl
 	_termux_setup_storage
+	termux-api-start 2>/dev/null || {
+		echo termux-api apk must be installed
+	return 1
+	}
 }
 
 {
