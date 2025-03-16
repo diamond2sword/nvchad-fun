@@ -25,6 +25,11 @@ if ! cd "$HOME"; then
 	return 1
 fi
 
+termux-info | grep -q 'com.termux.api' || {
+	echo termux-api apk must be installed
+return 1
+}
+
 _move_config()
 {
 	local _name="$1"
@@ -77,12 +82,8 @@ CMD_DIR=$(cd $(dirname $0); pwd)
 NVIM_PATH="$HOME/.config/nvim"
 {
 	_pkg update && _pkg upgrade
-	_pkg install termux-api openssl
 	_termux_setup_storage
-	termux-api-start 2>/dev/null || {
-		echo termux-api apk must be installed
-	return 1
-	}
+	_pkg install termux-api openssl
 }
 
 {
