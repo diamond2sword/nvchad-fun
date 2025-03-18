@@ -26,8 +26,8 @@ if ! cd "$HOME"; then
 fi
 
 termux-info | grep -q 'com.termux.api' || {
-	echo termux-api apk must be installed
-return 1
+	echo termux-api apk must be installed; _pause
+	return 1
 }
 
 _move_config()
