@@ -18,7 +18,8 @@ return {
   	opts = {
   		ensure_installed = {
         "lua", "c", "cpp", "python",
-				"bash", "vim", "vimdoc"
+				"bash", "vim", "vimdoc",
+				"gdscript", "godot_resource", "gdshader"
   			-- "vim", "lua", "vimdoc",
   			--   "html", "css"
   		},
