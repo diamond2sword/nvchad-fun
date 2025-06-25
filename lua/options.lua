@@ -10,3 +10,7 @@ o.linebreak = true
 o.breakindent = true
 o.expandtab = false
 o.clipboard = ""
+
+-- lsp
+vim.lsp.set_log_level("off")
+vim.diagnostic.enable(false)
