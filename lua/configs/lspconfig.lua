@@ -28,3 +28,4 @@ end
 --   on_init = nvlsp.on_init,
 --   capabilities = nvlsp.capabilities,
 -- }
+vim.lsp.set_log_level("off")

@@ -88,6 +88,7 @@ NVIM_PATH="$HOME/.config/nvim"
 
 {
 	_pkg install neovim clang python ripgrep luajit luarocks nodejs man
+	pip install typing
 	luarocks install jsregexp
 }
 
