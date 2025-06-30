@@ -10,6 +10,7 @@ o.linebreak = true
 o.breakindent = true
 o.expandtab = false
 o.clipboard = ""
+o.showbreak = "=== "
 
 -- lsp
 vim.lsp.set_log_level("off")
