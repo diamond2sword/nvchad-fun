@@ -3,6 +3,14 @@
 _pkg(){ pkg "$@"; }
 _pause(){ read; }
 _termux_setup_storage(){ termux-setup-storage; }
+
+if [[ "$_auto" != true ]]; then
+	echo "ASK: enable auto? [y]: "; read answer
+	if [[ "$answer" == true ]]; then
+		_auto=true
+	fi
+fi
+
 if [[ "$_auto" == true ]]; then
 	_pkg(){ yes | pkg "$@"; }
 	_pause(){ :; }
