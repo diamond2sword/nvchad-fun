@@ -101,6 +101,11 @@ NVIM_PATH="$HOME/.config/nvim"
 }
 
 {
+	# misc
+	_pkg install tree
+}
+
+{
 	# language servers
 	_pkg install lua-language-server shellcheck shfmt
 	_npm_g_install basedpyright bash-language-server
