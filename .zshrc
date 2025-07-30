@@ -47,6 +47,12 @@ _evalcache_clear_today
 
 # Remove older command from the history if a duplicate is to be added.
 setopt HIST_IGNORE_ALL_DUPS
+setopt SHARE_HISTORY
+setopt INC_APPEND_HISTORY
+setopt APPEND_HISTORY
+HISTFILE=~/.zhistory
+HISTSIZE=10000
+SAVEHIST=10000
 
 #
 # Input/output
